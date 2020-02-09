@@ -12,12 +12,6 @@ import java.util.Calendar;
 
 public class Utils {
 
-    public static Calendar addDays (Calendar date, int days) {
-        Calendar nextDate = (Calendar)date.clone();
-        nextDate.add(Calendar.DATE, days);
-        return nextDate;
-    }
-
     public static Calendar getDate (int day, int hour, int minute) {
         Calendar date = Calendar.getInstance();
         date.set(Calendar.DAY_OF_WEEK, day);

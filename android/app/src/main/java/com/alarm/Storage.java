@@ -13,18 +13,14 @@ import java.util.Map;
 public class Storage {
 
     public static void saveAlarm(Context context, Alarm alarm) {
-        SharedPreferences preferences = getSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        String json = new Gson().toJson(alarm);
-        editor.putString(alarm.uid, json);
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(alarm.uid, Alarm.toJson(alarm));
         editor.apply();
     }
 
-    public static void saveScheduled(Context context, String alarmUid, Date[] days) {
-        SharedPreferences preferences = getSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        String json = new Gson().toJson(days);
-        editor.putString(alarmUid + "_SCHEDULED", json);
+    public static void saveDates(Context context, AlarmDates dates) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(dates.uid, AlarmDates.toJson(dates));
         editor.apply();
     }
 
@@ -33,30 +29,29 @@ public class Storage {
         SharedPreferences preferences = getSharedPreferences(context);
         Map<String, ?> keyMap = preferences.getAll();
         for (Map.Entry<String, ?> entry : keyMap.entrySet()) {
-            if (entry.getKey().contains("_SCHEDULED")) continue;
-            alarms.add(new Gson().fromJson((String) entry.getValue(), Alarm.class));
+            if (AlarmDates.isDatesId(entry.getKey())) continue;
+            alarms.add(Alarm.fromJson((String)entry.getValue()));
         }
-        return alarms.toArray(new Alarm[alarms.size()]);
+        return alarms.toArray(new Alarm[0]);
     }
 
     public static Alarm getAlarm(Context context, String alarmUid) {
         SharedPreferences preferences = getSharedPreferences(context);
-        String json = preferences.getString(alarmUid, null);
-        return new Gson().fromJson(json, Alarm.class);
+        return Alarm.fromJson(preferences.getString(alarmUid, null));
     }
 
-    public static Date[] getScheduled(Context context, String alarmUid) {
+    public static AlarmDates getDates(Context context, String alarmUid) {
         SharedPreferences preferences = getSharedPreferences(context);
-        String json = preferences.getString(alarmUid + "_SCHEDULED", null);
-        return new Gson().fromJson(json, Date[].class);
+        String json = preferences.getString(AlarmDates.getDatesId(alarmUid), null);
+        return AlarmDates.fromJson(json);
     }
 
     public static void removeAlarm(Context context, String alarmUid) {
         remove(context, alarmUid);
     }
 
-    public static void removeScheduled(Context context, String alarmUid) {
-        remove(context, alarmUid + "_SCHEDULED");
+    public static void removeDates(Context context, String alarmUid) {
+        remove(context, AlarmDates.getDatesId(alarmUid));
     }
 
     public static void remove(Context context, String id) {
@@ -71,6 +66,11 @@ public class Storage {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    private static SharedPreferences.Editor getEditor (Context context) {
+        SharedPreferences sharedPreferences = getSharedPreferences(context);
+        return sharedPreferences.edit();
     }
 
     private static SharedPreferences getSharedPreferences(Context context) {

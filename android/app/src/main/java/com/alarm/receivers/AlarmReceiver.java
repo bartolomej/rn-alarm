@@ -7,14 +7,16 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alarm.Service;
+
 public class AlarmReceiver extends BroadcastReceiver {
 
     private static final String TAG = "AlarmReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String log = "RECEIVED: " + intent.getAction() + " EXTRAS: " + intent.getStringExtra("alarm");
-        Log.d(TAG, log);
-        Toast.makeText(context, log, Toast.LENGTH_LONG).show();
+        String alarmUid = intent.getStringExtra("ALARM_UID");
+        Service.start(context, alarmUid);
+        Log.d(TAG, "received alarm: " + alarmUid);
     }
 }

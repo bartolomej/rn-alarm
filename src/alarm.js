@@ -4,12 +4,20 @@ import uuid from 'uuid/v4';
 
 const AlarmService = NativeModules.AlarmModule;
 
-export function toast (message) {
-  AlarmService.toast(message);
-}
-
 export function set (alarm) {
   AlarmService.set(alarm);
+}
+
+export function stop () {
+  AlarmService.stop();
+}
+
+export function snooze () {
+  AlarmService.snooze();
+}
+
+export function removeAll () {
+  AlarmService.removeAll();
 }
 
 export async function getAll () {

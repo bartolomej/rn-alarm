@@ -1,7 +1,6 @@
 package com.alarm;
 
 import android.app.AlarmManager;
-import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,16 +20,15 @@ import com.alarm.receivers.AlarmReceiver;
 import com.alarm.receivers.DismissReceiver;
 import com.app.R;
 
-import java.util.Date;
 
 public class AlarmHelper {
 
     private static final String TAG = "AlarmHelper";
 
-    public static void scheduleAlarm (Context context, long triggerAtMillis, int notificationID) {
+    public static void scheduleAlarm (Context context, String alarmUid, long triggerAtMillis, int notificationID) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("alarm", "test intent message");
+        intent.putExtra("ALARM_UID", alarmUid);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
                 notificationID,
@@ -60,11 +58,11 @@ public class AlarmHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         alarmManager.cancel(pendingIntent);
+        Log.d(TAG, "canceling alarm with notification id: " + notificationID);
     }
 
-    public static void sendNotification(Application context, Alarm alarm, Date date) {
+    public static void sendNotification(Context context, Alarm alarm, int notificationID) {
         try {
-            int notificationID = Alarm.getNotificationId(date);
             NotificationCompat.Builder mBuilder = getNotificationBuilder(context, notificationID, alarm.title, alarm.description);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(notificationID, mBuilder.build());
@@ -121,7 +119,7 @@ public class AlarmHelper {
 
             Log.d(TAG, "created a notification channel " + channel.toString());
         } else {
-            Log.d(TAG, "didn't have to create a notification channel");
+            Log.d(TAG, "didn't need to create a notification channel");
         }
     }
 

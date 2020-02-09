@@ -34,14 +34,24 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void toast (String message) {
-        Toast.makeText(reactContext, message, Toast.LENGTH_LONG).show();
-    }
-
-    @ReactMethod
     public void set (ReadableMap details) {
         Alarm alarm = parseAlarmObject(details);
         Service.schedule(reactContext, alarm);
+    }
+
+    @ReactMethod
+    public void removeAll () {
+        Service.removeAll(reactContext);
+    }
+
+    @ReactMethod
+    public void stop () {
+        Service.stop(reactContext);
+    }
+
+    @ReactMethod
+    public void snooze () {
+        Service.snooze(reactContext);
     }
 
     @ReactMethod
@@ -51,6 +61,8 @@ public class AlarmModule extends ReactContextBaseJavaModule {
             WritableNativeArray serializedAlarms = serializeArray(alarms);
             promise.resolve(serializedAlarms);
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             promise.reject(e.getMessage(), e);
         }
     }
