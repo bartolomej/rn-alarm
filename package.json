@@ -12,7 +12,8 @@
   "dependencies": {
     "@react-native-community/datetimepicker": "^2.2.1",
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

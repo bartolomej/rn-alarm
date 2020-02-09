@@ -180,7 +180,16 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:0.61.5"  // From node_modules
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "com.android.support:support-compat:28.0.0"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.6.2'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.2'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.2'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.2'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

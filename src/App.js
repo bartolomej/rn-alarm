@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Platform, View, Text, StyleSheet, StatusBar } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {toast} from './alarm';
+import Alarm, {set, getAll, getAndroidDay} from './alarm';
 
 
 const App = () => {
@@ -25,8 +25,16 @@ const App = () => {
       <StatusBar barStyle="light-content"/>
       <View>
         <Text>{date ? date.toLocaleString() : 'No alarm!'}</Text>
-        <Button onPress={onShowPicker} title="SET ALARM"/>
-        <Button onPress={() => toast("HELLO WORLD")} title="TOAST"/>
+        <Button onPress={() => {
+          const alarm = new Alarm();
+          alarm.default();
+          alarm.days = [getAndroidDay(new Date().getDay())];
+          alarm.minutes = new Date().getMinutes() + 1;
+          set(alarm)
+        }} title="SET ALARM"/>
+        <Button onPress={async () => {
+          console.log(await getAll())
+        }} title="GET ALARMS"/>
       </View>
       {showPicker && (
         <DateTimePicker
