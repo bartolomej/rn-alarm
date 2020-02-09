@@ -1,48 +1,39 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Platform, View, Text, StyleSheet, StatusBar } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {toast} from './alarm';
 
 
 const App = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [date, setDate] = useState(null);
+  const [showPicker, setShowPicker] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
 
     setDate(currentDate);
-    setShow(Platform.OS === 'ios');
+    setShowPicker(Platform.OS === 'ios');
   };
 
-  const showMode = currentMode => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
+  const onShowPicker = () => {
+    if (!date) setDate(new Date());
+    setShowPicker(true);
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content"/>
       <View>
-        <Button onPress={showDatepicker} title="Show date picker!"/>
+        <Text>{date ? date.toLocaleString() : 'No alarm!'}</Text>
+        <Button onPress={onShowPicker} title="SET ALARM"/>
+        <Button onPress={() => toast("HELLO WORLD")} title="TOAST"/>
       </View>
-      <View>
-        <Button onPress={showTimepicker} title="Show time picker!"/>
-      </View>
-      {show && (
+      {showPicker && (
         <DateTimePicker
           testID="dateTimePicker"
           timeZoneOffsetInMinutes={0}
           value={date}
-          mode={mode}
+          mode={'time'}
           is24Hour={true}
           display="default"
           onChange={onChange}
