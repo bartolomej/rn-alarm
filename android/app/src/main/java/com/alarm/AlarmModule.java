@@ -40,6 +40,17 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void update (ReadableMap details) {
+        Alarm alarm = parseAlarmObject(details);
+        Service.update(reactContext, alarm);
+    }
+
+    @ReactMethod
+    public void remove (String alarmUid) {
+        Service.remove(reactContext, alarmUid);
+    }
+
+    @ReactMethod
     public void removeAll () {
         Service.removeAll(reactContext);
     }
@@ -52,6 +63,18 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void snooze () {
         Service.snooze(reactContext);
+    }
+
+    @ReactMethod
+    public void get (String alarmUid, Promise promise) {
+        try {
+            Alarm alarm = Storage.getAlarm(reactContext, alarmUid);
+            promise.resolve(serializeAlarmObject(alarm));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            promise.reject(e.getMessage(), e);
+        }
     }
 
     @ReactMethod

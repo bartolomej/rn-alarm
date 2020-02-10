@@ -4,49 +4,76 @@ import uuid from 'uuid/v4';
 
 const AlarmService = NativeModules.AlarmModule;
 
-export function set (alarm) {
+export function scheduleAlarm (alarm) {
   AlarmService.set(alarm);
 }
 
-export function stop () {
+export function stopAlarm () {
   AlarmService.stop();
 }
 
-export function snooze () {
+export function snoozeAlarm () {
   AlarmService.snooze();
 }
 
-export function removeAll () {
+export function removeAlarm (uid) {
+  AlarmService.remove(uid);
+}
+
+export function updateAlarm (alarm) {
+  AlarmService.update(alarm);
+}
+
+export function removeAllAlarms () {
   AlarmService.removeAll();
 }
 
-export async function getAll () {
+export async function getAllAlarms () {
   return AlarmService.getAll();
 }
 
 export default class Alarm {
 
-  constructor (title, description, days, hour, minutes, repeating) {
-    this.uid = uuid();
-    this.title = title;
-    this.description = description;
-    this.days = days ? days.map(getAndroidDay) : [];
-    this.hour = hour;
-    this.minutes = minutes;
-    this.repeating = repeating;
+  constructor (params = null) {
+    this.uid = getParam(params, 'uid', uuid());
+    this.enabled = getParam(params, 'enabled', true);
+    this.title = getParam(params, 'title', 'Alarm');
+    this.description = getParam(params, 'description', 'Wake up');
+    this.hour = getParam(params, 'hour', new Date().getHours());
+    this.minutes = getParam(params, 'minutes', new Date().getMinutes());
+    this.repeating = getParam(params, 'repeating', false);
+    this.days = toAndroidDays(getParam(params, 'days', [new Date().getDay()]));
   }
 
-  default () {
-    this.title = "Alarm";
-    this.description = "Wake up";
-    this.days = [getAndroidDay(new Date().getDay() + 1)];
-    this.hour = new Date().getHours();
-    this.minutes = new Date().getMinutes();
-    this.repeating = false;
+  static getEmpty () {
+    return new Alarm({
+      title: '',
+      description: '',
+      hour: 0,
+      minutes: 0,
+      repeating: false,
+      days: []
+    })
+  }
+
+  getTime () {
+    const timeDate = new Date();
+    timeDate.setMinutes(this.minutes);
+    timeDate.setHours(this.hour);
+    return timeDate;
   }
 
 }
 
-export function getAndroidDay (day) {
-  return (day + 1) % 7;
+function getParam (param, key, defaultValue) {
+  try {
+    if (param && param[key]) return param[key];
+    else return defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
+}
+
+export function toAndroidDays (daysArray) {
+  return daysArray.map(day => (day + 1) % 7);
 }

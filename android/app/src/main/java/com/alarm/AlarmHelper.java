@@ -90,8 +90,7 @@ public class AlarmHelper {
     }
 
     public static void cancelNotification (Context context, int notificationId) {
-        NotificationManager manager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(notificationId);
         manager.cancelAll();
     }

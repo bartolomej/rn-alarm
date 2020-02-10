@@ -21,7 +21,14 @@ public class Service {
     }
 
     public static void update(Context context, Alarm alarm) {
-
+        AlarmDates prevDates = Storage.getDates(context, alarm.uid);
+        AlarmDates dates = alarm.getAlarmDates();
+        for (Date date : prevDates.getDates()) {
+            AlarmHelper.cancelAlarm(context, dates.getNotificationId(date));
+        }
+        for (Date date : dates.getDates()) {
+            AlarmHelper.scheduleAlarm(context, alarm.uid, date.getTime(), dates.getNotificationId(date));
+        }
     }
 
     public static void removeAll(Context context) {
@@ -35,18 +42,30 @@ public class Service {
         Alarm alarm = Storage.getAlarm(context, alarmUid);
         AlarmDates dates = Storage.getDates(context, alarm.uid);
         for (Date date : dates.getDates()) {
-            AlarmHelper.cancelAlarm(context, dates.getNotificationId(date));
+            int notificationID = dates.getNotificationId(date);
+            AlarmHelper.cancelAlarm(context, notificationID);
+            AlarmHelper.cancelNotification(context, notificationID);
         }
         Storage.removeAlarm(context, alarm.uid);
         Storage.removeDates(context, alarm.uid);
+        if (sound != null) {
+            sound.stop();
+            sound.release();
+        }
     }
 
     public static void enable(Context context, String alarmUid) {
-
+        AlarmDates dates = Storage.getDates(context, alarmUid);
+        for (Date date : dates.getDates()) {
+            AlarmHelper.scheduleAlarm(context, alarmUid, date.getTime(), dates.getNotificationId(date));
+        }
     }
 
     public static void disable(Context context, String alarmUid) {
-
+        AlarmDates dates = Storage.getDates(context, alarmUid);
+        for (Date date : dates.getDates()) {
+            AlarmHelper.cancelAlarm(context, dates.getNotificationId(date));
+        }
     }
 
     public static void start(Context context, String alarmUid) {
