@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class AlarmPackage implements ReactPackage {
+public class Package implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new AlarmModule(reactContext));
+        return Arrays.<NativeModule>asList(new Module(reactContext));
     }
 
     @Override

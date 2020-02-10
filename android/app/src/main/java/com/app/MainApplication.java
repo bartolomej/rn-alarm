@@ -3,7 +3,7 @@ package com.app;
 import android.app.Application;
 import android.content.Context;
 
-import com.alarm.AlarmPackage;
+import com.alarm.Package;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -26,7 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
             @SuppressWarnings("UnnecessaryLocalVariable")
             List<ReactPackage> packages = new PackageList(this).getPackages();
             // Packages that cannot be autolinked yet can be added manually here, for example:
-            packages.add(new AlarmPackage());
+            packages.add(new Package());
             return packages;
         }
 

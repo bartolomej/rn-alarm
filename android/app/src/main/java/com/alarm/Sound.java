@@ -1,6 +1,5 @@
 package com.alarm;
 
-import android.app.Application;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -11,9 +10,9 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 
-public class Sound {
+class Sound {
 
-    private static final String TAG = "Sound";
+    private static final String TAG = "AlarmSound";
     private static final long DEFAULT_VIBRATION = 100;
 
     private AudioManager audioManager;
@@ -23,7 +22,7 @@ public class Sound {
 
     private Context context;
 
-    public Sound(Context context) {
+    Sound(Context context) {
         this.context = context;
         this.vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -31,19 +30,22 @@ public class Sound {
         this.mediaPlayer = new MediaPlayer();
     }
 
-    public void play(String soundName) {
+    void play(String soundName) {
         Uri soundUri = getSoundUri(soundName);
         playSound(soundUri);
         startVibration();
     }
 
-    public void stop() {
-        stopSound();
-        stopVibration();
-    }
-
-    public void release() {
-        mediaPlayer.release();
+    void stop() {
+        try {
+            if (mediaPlayer.isPlaying()) {
+                stopSound();
+                stopVibration();
+                mediaPlayer.release();
+            }
+        } catch (IllegalStateException e) {
+            Log.d(TAG, "Sound has probably been released already");
+        }
     }
 
     private void playSound(Uri soundUri) {
@@ -57,16 +59,16 @@ public class Sound {
                 mediaPlayer.start();
             }
         } catch (Exception e) {
-            Log.e(TAG, "failed to play sound", e);
+            Log.e(TAG, "Failed to play sound", e);
         }
     }
 
     private void stopSound() {
         try {
             // reset the volume to what it was before we changed it.
-            //audioManager.setStreamVolume(AudioManager.STREAM_ALARM, userVolume, AudioManager.FLAG_PLAY_SOUND);
+            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, userVolume, AudioManager.FLAG_PLAY_SOUND);
             mediaPlayer.stop();
-            //mediaPlayer.reset();
+            mediaPlayer.reset();
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "ringtone: " + e.getMessage());
@@ -74,7 +76,6 @@ public class Sound {
     }
 
     private void startVibration() {
-        //startVibration
         vibrator.vibrate(DEFAULT_VIBRATION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createOneShot(5000, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -92,7 +93,7 @@ public class Sound {
     }
 
     private void stopVibration() {
-        vibrator.cancel(); // cancels
+        vibrator.cancel();
     }
 
     private Uri getSoundUri(String soundName) {
@@ -107,7 +108,6 @@ public class Sound {
                 soundName = soundName.substring(0, soundName.lastIndexOf('.'));
                 resId = context.getResources().getIdentifier(soundName, "raw", context.getPackageName());
             }
-
             soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" + resId);
         }
         return soundUri;

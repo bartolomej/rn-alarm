@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Home from './Home';
 import Settings from './Edit';
+import Ring from './Ring';
 
 
 const Stack = createStackNavigator();
@@ -28,6 +29,11 @@ export default function () {
         <Stack.Screen
           name="Edit"
           component={Settings}
+        />
+        <Stack.Screen
+          name="Ring"
+          component={Ring}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

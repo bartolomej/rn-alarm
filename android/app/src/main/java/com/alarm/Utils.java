@@ -1,13 +1,7 @@
 package com.alarm;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-
-import com.alarm.receivers.AlarmReceiver;
-
 import java.util.Calendar;
 
 public class Utils {

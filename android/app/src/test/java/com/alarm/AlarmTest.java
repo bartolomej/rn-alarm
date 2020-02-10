@@ -1,9 +1,5 @@
 package com.alarm;
 
-import com.alarm.Alarm;
-import com.alarm.AlarmType;
-import com.alarm.Utils;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +46,7 @@ public class AlarmTest {
         Alarm alarm = new Alarm("1", days, 1, 0, "Test", "Test description", false);
         Date[] dates = alarm.getDates();
 
-        assertEquals(alarm.getType(), AlarmType.REPEATING);
+        assertEquals(alarm.getRepeating(), AlarmType.REPEATING);
         assertEquals(Utils.getDate(1,1,0).getTime(), dates[0]);
         assertEquals(Utils.getDate(3,1,0).getTime(), dates[1]);
     }
@@ -60,7 +56,7 @@ public class AlarmTest {
         ArrayList<Integer> days = getDays(new int[]{1});
         Alarm alarm = new Alarm("1", days, 1, 0, "Test", "Test description", false);
 
-        assertEquals(AlarmType.SINGLE, alarm.getType());
+        assertEquals(AlarmType.SINGLE, alarm.getRepeating());
         assertEquals(1, alarm.getDates().length);
         assertEquals(Utils.getDate(1, 1, 0).getTime(), alarm.getDates()[0]);
     }

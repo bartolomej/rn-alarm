@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 
-export default function ({uid, title, hour, minutes, days, onPress, enabled, onChange}) {
+export default function ({uid, title, hour, minutes, days, onPress, active, onChange}) {
+  const [isActive, setIsActive] = useState(active);
 
   return (
     <TouchableOpacity
@@ -24,8 +25,11 @@ export default function ({uid, title, hour, minutes, days, onPress, enabled, onC
             false: 'blue',
             true: 'black',
           }}
-          value={enabled}
-          onValueChange={onChange}/>
+          value={isActive}
+          onValueChange={value => {
+            onChange(value);
+            setIsActive(value);
+          }}/>
       </View>
     </TouchableOpacity>
   );

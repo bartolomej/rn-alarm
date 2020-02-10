@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, View, Text } from 'react-native';
 import Alarm, { removeAlarm, scheduleAlarm, updateAlarm } from './alarm';
 import DayPicker from './components/DayPicker';
 import TimePicker from './components/TimePicker';
+import Button from './components/Button';
+import { globalStyles } from './global';
 
 
 export default function ({ route, navigation }) {
-  const [alarm, setAlarm] = useState(Alarm.getEmpty);
+  const [alarm, setAlarm] = useState(null);
   const [mode, setMode] = useState(null);
 
   useEffect(() => {
@@ -27,9 +29,11 @@ export default function ({ route, navigation }) {
     setAlarm(a);
   }
 
+  if (!alarm) return <Text>Loading...</Text>;
+
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
+    <View style={globalStyles.container}>
+      <View style={globalStyles.innerContainer}>
         <TimePicker
           onChange={(h, m) => update([['hour', h], ['minutes', m]])}
           hour={alarm.hour}
@@ -72,36 +76,3 @@ export default function ({ route, navigation }) {
     </View>
   );
 }
-
-function Button ({ onPress, title }) {
-  return (
-    <TouchableOpacity
-      style={styles.button}
-      onPress={onPress}
-      underlayColor='#fff'>
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  innerContainer: {
-    width: '90%',
-    height: '90%',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'transparent',
-  },
-  buttonText: {
-    color: 'black',
-  },
-});

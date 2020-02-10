@@ -1,11 +1,24 @@
 import { NativeModules } from 'react-native';
 import uuid from 'uuid/v4';
+import React from 'react';
 
 
 const AlarmService = NativeModules.AlarmModule;
 
 export function scheduleAlarm (alarm) {
-  AlarmService.set(alarm);
+  if (!(alarm instanceof Alarm)) {
+    alarm = new Alarm(alarm);
+  }
+  AlarmService.set(alarm.toAndroid());
+  console.log('scheduling alarm: ', JSON.stringify(alarm))
+}
+
+export function enableAlarm (uid) {
+  AlarmService.enable(uid);
+}
+
+export function disableAlarm (uid) {
+  AlarmService.disable(uid);
 }
 
 export function stopAlarm () {
@@ -21,7 +34,10 @@ export function removeAlarm (uid) {
 }
 
 export function updateAlarm (alarm) {
-  AlarmService.update(alarm);
+  if (!(alarm instanceof Alarm)) {
+    alarm = new Alarm(alarm);
+  }
+  AlarmService.update(alarm.toAndroid());
 }
 
 export function removeAllAlarms () {
@@ -29,7 +45,17 @@ export function removeAllAlarms () {
 }
 
 export async function getAllAlarms () {
-  return AlarmService.getAll();
+  const alarms = await AlarmService.getAll();
+  return alarms.map(a => Alarm.fromAndroid(a));
+}
+
+export async function getAlarm (uid) {
+  const alarm = await AlarmService.get(uid);
+  return Alarm.fromAndroid(alarm)
+}
+
+export async function getAlarmState () {
+  return AlarmService.getState();
 }
 
 export default class Alarm {
@@ -41,8 +67,10 @@ export default class Alarm {
     this.description = getParam(params, 'description', 'Wake up');
     this.hour = getParam(params, 'hour', new Date().getHours());
     this.minutes = getParam(params, 'minutes', new Date().getMinutes());
+    this.snoozeInterval = getParam(params, 'snoozeInterval', 1);
     this.repeating = getParam(params, 'repeating', false);
-    this.days = toAndroidDays(getParam(params, 'days', [new Date().getDay()]));
+    this.active = getParam(params, 'active', true);
+    this.days = getParam(params, 'days', [new Date().getDay()]);
   }
 
   static getEmpty () {
@@ -52,8 +80,26 @@ export default class Alarm {
       hour: 0,
       minutes: 0,
       repeating: false,
-      days: []
-    })
+      days: [],
+    });
+  }
+
+  toAndroid () {
+    return {
+      ...this,
+      days: toAndroidDays(this.days)
+    }
+  }
+
+  static fromAndroid (alarm) {
+    alarm.days = fromAndroidDays(alarm.days);
+    return new Alarm(alarm);
+  }
+
+  getTimeString () {
+    const hour = this.hour < 10 ? '0' + this.hour : this.hour;
+    const minutes = this.minutes < 10 ? '0' + this.minutes : this.minutes;
+    return { hour, minutes };
   }
 
   getTime () {
@@ -67,8 +113,11 @@ export default class Alarm {
 
 function getParam (param, key, defaultValue) {
   try {
-    if (param && param[key]) return param[key];
-    else return defaultValue;
+    if (param && (param[key] !== null || param[key] !== undefined)) {
+      return param[key];
+    } else {
+      return defaultValue;
+    }
   } catch (e) {
     return defaultValue;
   }
@@ -76,4 +125,8 @@ function getParam (param, key, defaultValue) {
 
 export function toAndroidDays (daysArray) {
   return daysArray.map(day => (day + 1) % 7);
+}
+
+export function fromAndroidDays (daysArray) {
+  return daysArray.map(d => d === 0 ? 6 : d - 1);
 }

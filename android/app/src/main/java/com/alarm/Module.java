@@ -1,36 +1,35 @@
 package com.alarm;
 
-import android.widget.Toast;
-
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class AlarmModule extends ReactContextBaseJavaModule {
+public class Module extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
 
-    public AlarmModule(ReactApplicationContext reactContext) {
+    public Module(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        AlarmHelper.createNotificationChannel(reactContext);
+        Helper.createNotificationChannel(reactContext);
     }
 
     @Override
     public String getName() {
         return "AlarmModule";
+    }
+
+    @ReactMethod
+    public void getState (Promise promise) {
+        promise.resolve(Service.getActiveAlarm());
     }
 
     @ReactMethod
@@ -53,6 +52,16 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void removeAll () {
         Service.removeAll(reactContext);
+    }
+
+    @ReactMethod
+    public void enable (String alarmUid) {
+        Service.enable(reactContext, alarmUid);
+    }
+
+    @ReactMethod
+    public void disable (String alarmUid) {
+        Service.disable(reactContext, alarmUid);
     }
 
     @ReactMethod
@@ -96,7 +105,9 @@ public class AlarmModule extends ReactContextBaseJavaModule {
         String description = alarm.getString("description");
         int hour = alarm.getInt("hour");
         int minutes = alarm.getInt("minutes");
+        int snoozeInterval = alarm.getInt("snoozeInterval");
         boolean repeating = alarm.getBoolean("repeating");
+        boolean active = alarm.getBoolean("active");
         ArrayList<Integer> days = new ArrayList<>();
         if (!alarm.isNull("days")) {
             ReadableArray rawDays = alarm.getArray("days");
@@ -104,7 +115,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
                 days.add(rawDays.getInt(i));
             }
         }
-        return new Alarm(uid, days, hour, minutes, title, description, repeating);
+        return new Alarm(uid, days, hour, minutes, snoozeInterval, title, description, repeating, active);
     }
 
     private WritableMap serializeAlarmObject (Alarm alarm) {
@@ -114,8 +125,10 @@ public class AlarmModule extends ReactContextBaseJavaModule {
         map.putString("description", alarm.description);
         map.putInt("hour", alarm.hour);
         map.putInt("minutes", alarm.minutes);
+        map.putInt("snoozeInterval", alarm.snoozeInterval);
         map.putArray("days", serializeArray(alarm.days));
-        map.putBoolean("repeating", alarm.type.equals(AlarmType.REPEATING));
+        map.putBoolean("repeating", alarm.repeating);
+        map.putBoolean("active", alarm.active);
         return map;
     }
 

@@ -1,22 +1,29 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { getAllAlarms } from './alarm';
+import { Text, View } from 'react-native';
+import { getAlarmState, getAllAlarms, disableAlarm, enableAlarm } from './alarm';
 import AlarmView from './components/AlarmView';
 import React, { useEffect, useState } from 'react';
+import { globalStyles } from './global';
 
 
 export default function ({ navigation }) {
   const [alarms, setAlarms] = useState(null);
 
   useEffect(() => {
+    navigation.addListener('focus', async () => {
+      setAlarms(await getAllAlarms());
+    });
     (async function () {
-      const alarms = await getAllAlarms();
-      setAlarms(alarms);
+      const activeAlarm = await getAlarmState();
+      if (activeAlarm) {
+        navigation.navigate('Ring', { alarmUid: activeAlarm });
+      }
+      setAlarms(await getAllAlarms());
     }());
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
+    <View style={globalStyles.container}>
+      <View style={globalStyles.innerContainer}>
         {alarms && alarms.length === 0 && (
           <Text>No alarms</Text>
         )}
@@ -24,31 +31,19 @@ export default function ({ navigation }) {
           <AlarmView
             key={a.uid}
             uid={a.uid}
+            onChange={active => {
+              if (active) enableAlarm(a.uid);
+              else disableAlarm(a.uid);
+            }}
             onPress={() => navigation.navigate('Edit', { alarm: a })}
             title={a.title}
             hour={a.hour}
             minutes={a.minutes}
             days={a.days}
-            enabled={a.enabled}
+            active={a.active}
           />
         ))}
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  innerContainer: {
-    width: '90%',
-    height: '90%',
-    display: 'flex',
-    alignItems: 'center',
-  }
-});

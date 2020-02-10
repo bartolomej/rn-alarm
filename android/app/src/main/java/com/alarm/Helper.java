@@ -21,9 +21,9 @@ import com.alarm.receivers.DismissReceiver;
 import com.app.R;
 
 
-public class AlarmHelper {
+public class Helper {
 
-    private static final String TAG = "AlarmHelper";
+    private static final String TAG = "Helper";
 
     public static void scheduleAlarm (Context context, String alarmUid, long triggerAtMillis, int notificationID) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-enum AlarmType { REPEATING, SINGLE }
 
 public class Alarm implements Cloneable, Serializable {
 
@@ -18,21 +17,19 @@ public class Alarm implements Cloneable, Serializable {
     int snoozeInterval;
     String title;
     String description;
-    AlarmType type;
+    boolean repeating;
+    boolean active;
 
-    public Alarm (String uid, ArrayList<Integer> days, int hour, int minutes, String title, String description, boolean repeating) {
+    public Alarm (String uid, ArrayList<Integer> days, int hour, int minutes, int snoozeInterval, String title, String description, boolean repeating, boolean active) {
         this.uid = uid;
         this.days = days;
         this.hour = hour;
         this.minutes = minutes;
-        this.snoozeInterval = 1;
+        this.snoozeInterval = snoozeInterval;
         this.title = title;
         this.description = description;
-        this.type = repeating ? AlarmType.REPEATING : AlarmType.SINGLE;
-    }
-
-    public AlarmType getType () {
-        return type;
+        this.repeating = repeating;
+        this.active = active;
     }
 
     public Date[] getDates () {
@@ -53,10 +50,6 @@ public class Alarm implements Cloneable, Serializable {
             }
         }
         return null;
-    }
-
-    public static int getNotificationId (Date date) {
-        return (int)date.getTime();
     }
 
     public AlarmDates getAlarmDates () {

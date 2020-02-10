@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 
 export default function ({ activeDays = [], description, onChange = () => null }) {
+  // NOTICE: days doesn't change if prop activeDays changes
   const [days, setDays] = useState(activeDays);
 
   function onDayChange (dayIndex) {
