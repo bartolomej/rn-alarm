@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Home';
 import Settings from './Edit';
 import Ring from './Ring';
+import { colors } from './global';
 
 
 const Stack = createStackNavigator();
@@ -19,16 +20,21 @@ export default function () {
           name="Home"
           component={Home}
           options={params => ({
-            headerTitle: props => <Text>Alarms</Text>,
-            headerRight: () => <AddButton
-              title={"ADD"}
-              onPress={() => params.navigation.navigate('Edit')}
-            />
+            headerTitle: props => (
+              <Text style={styles.headerTitle}>Alarms</Text>
+            ),
+            headerRight: () => (
+              <AddButton
+                title={"+ "}
+                onPress={() => params.navigation.navigate('Edit')}
+              />
+            )
           })}
         />
         <Stack.Screen
           name="Edit"
           component={Settings}
+          options={{title: 'Alarm'}}
         />
         <Stack.Screen
           name="Ring"
@@ -58,5 +64,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
+    fontWeight: 'bold',
+    fontSize: 25
   },
+  headerTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: colors.BLUE,
+  }
 });

@@ -2,8 +2,8 @@
   package="com.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
       android:name="com.app.MainApplication"
@@ -17,6 +17,12 @@
             android:enabled="true"
             android:exported="true"
             />
+        <receiver
+            android:name="com.alarm.receivers.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
       <activity
         android:name="com.app.MainActivity"
         android:label="@string/app_name"

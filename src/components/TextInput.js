@@ -1,12 +1,15 @@
 import React from 'react';
 import { TextInput, View, StyleSheet, Text } from 'react-native';
+import { colors } from '../global';
 
 
 export default function ({onChangeText, value, description}) {
 
   return (
     <View style={styles.container}>
-      <Text>{description}</Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.descriptionText}>{description}</Text>
+      </View>
       <TextInput
         style={styles.textInput}
         onChangeText={onChangeText}
@@ -18,7 +21,8 @@ export default function ({onChangeText, value, description}) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    marginTop: 5,
+    marginBottom: 5,
   },
   textInput: {
     borderWidth: 1,
@@ -26,6 +30,15 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    borderColor: 'black',
+    borderColor: colors.GREY,
+    fontWeight: 'bold'
   },
+  descriptionContainer: {
+    margin: 10,
+    marginLeft: 0
+  },
+  descriptionText: {
+    fontWeight: 'bold',
+    color: colors.BLUE
+  }
 });

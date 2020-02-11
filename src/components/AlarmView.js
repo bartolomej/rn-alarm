@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import {colors} from '../global';
+
 
 export default function ({uid, title, hour, minutes, days, onPress, active, onChange}) {
   const [isActive, setIsActive] = useState(active);
@@ -11,17 +13,16 @@ export default function ({uid, title, hour, minutes, days, onPress, active, onCh
     >
       <View style={styles.leftInnerContainer}>
         <Text style={styles.clock}>
-          {hour < 10 ? '0' + hour : hour} : {minutes < 10 ? '0' + minutes : minutes}
+          {hour < 10 ? '0' + hour : hour}:{minutes < 10 ? '0' + minutes : minutes}
         </Text>
         <View style={styles.descContainer}>
-          <Text>{title}</Text>
-          <Text>, {getAlphabeticalDays(days)}</Text>
+          <Text>{getAlphabeticalDays(days)}</Text>
         </View>
       </View>
       <View style={styles.rightInnerContainer}>
         <Switch
           ios_backgroundColor={'black'}
-          trackColor={{ false: 'blue', true: 'black', }}
+          trackColor={{ false: colors.GREY, true: colors.BLUE, }}
           value={isActive}
           onValueChange={value => {
             onChange(value);

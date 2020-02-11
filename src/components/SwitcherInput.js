@@ -1,18 +1,19 @@
 import React from 'react';
 import {View, Switch, Text, StyleSheet} from 'react-native';
+import { colors } from '../global';
 
 
 export default function ({value, onChange, description}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text>{description}</Text>
+      <View style={styles.leftContainer}>
+        <Text style={styles.descriptionText}>{description}</Text>
       </View>
-      <View style={styles.innerContainer}>
+      <View style={styles.rightContainer}>
         <Switch
           ios_backgroundColor={'black'}
-          trackColor={{ false: 'blue', true: 'black', }}
+          trackColor={{ false: colors.GREY, true: colors.BLUE, }}
           value={value}
           onValueChange={value => onChange(value)}/>
       </View>
@@ -22,12 +23,25 @@ export default function ({value, onChange, description}) {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    height: 80,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  innerContainer: {
-    flex: 1
+  leftContainer: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  rightContainer: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
+  descriptionText: {
+    fontWeight: 'bold',
+    color: colors.BLUE
   }
 });

@@ -11,21 +11,19 @@ export default function ({ navigation }) {
   useEffect(() => {
     navigation.addListener('focus', async () => {
       setAlarms(await getAllAlarms());
-      setScheduler(startInterval());
+      setScheduler(setInterval(fetchState, 10000));
     });
     navigation.addListener('blur', async () => {
       clearInterval(scheduler);
     });
+    fetchState();
   }, []);
 
-  function startInterval () {
-    return setInterval(async () => {
-      const alarmUid = await getAlarmState();
-      if (alarmUid) {
-        console.log('found ringing alarm: ', alarmUid);
-        navigation.navigate('Ring', { alarmUid });
-      }
-    }, 10000);
+  async function fetchState () {
+    const alarmUid = await getAlarmState();
+    if (alarmUid) {
+      navigation.navigate('Ring', { alarmUid });
+    }
   }
 
   return (

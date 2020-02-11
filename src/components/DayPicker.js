@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {colors} from '../global';
 
 
-export default function ({ activeDays = [], description, onChange = () => null }) {
+export default function ({ activeDays = [], onChange = () => null }) {
   // NOTICE: days doesn't change if prop activeDays changes
   const [days, setDays] = useState(activeDays);
 
@@ -17,8 +17,6 @@ export default function ({ activeDays = [], description, onChange = () => null }
 
   return (
     <View style={styles.container}>
-
-      <Text style={styles.description}>{description}</Text>
       <View style={styles.innerContainer}>
         {getSelected(days).map((isSelected, index) => (
           <Day
@@ -39,7 +37,7 @@ function Day ({ isActive, dayIndex, onUpdate }) {
       <TouchableOpacity
         style={[isActive ? styles.selectedBtn : styles.unselectedBtn, styles.btnContainer]}
         onPress={() => onUpdate(dayIndex)}>
-        <Text style={styles.dayText}>
+        <Text style={[styles.text, isActive ? styles.selectedText : styles.unselectedText]}>
           {getDay(dayIndex)}
         </Text>
       </TouchableOpacity>
@@ -72,17 +70,12 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     alignItems: 'flex-start',
+    marginTop: 5,
+    marginBottom: 5
   },
   innerContainer: {
     display: 'flex',
     flexDirection: 'row'
-  },
-  description: {
-    marginLeft: 10,
-    textAlign: 'left',
-    fontWeight: '200',
-    fontSize: 13,
-    color: 'black',
   },
   btnContainer: {
     width: 40,
@@ -102,7 +95,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GREY
   },
-  dayText: {
+  text: {
+    fontWeight: 'bold'
+  },
+  selectedText: {
+    color: 'white'
+  },
+  unselectedText: {
     color: 'black'
   }
 });

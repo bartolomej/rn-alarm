@@ -53,46 +53,48 @@ export default function ({ route, navigation }) {
   return (
     <View style={globalStyles.container}>
       <View style={[globalStyles.innerContainer, styles.container]}>
-        <TimePicker
-          onChange={(h, m) => update([['hour', h], ['minutes', m]])}
-          hour={alarm.hour}
-          minutes={alarm.minutes}
-        />
-        <TextInput
-          description={'Title'}
-          style={styles.textInput}
-          onChangeText={v => update([['title', v]])}
-          value={alarm.title}
-        />
-        <TextInput
-          description={'Description'}
-          style={styles.textInput}
-          onChangeText={v => update([['description', v]])}
-          value={alarm.description}
-        />
-        <SwitcherInput
-          description={'Repeat'}
-          value={alarm.repeating}
-          onChange={v => update([['repeating', v]])}
-        />
-        {alarm.repeating && (
-          <DayPicker
+        <View styles={styles.inputsContainer}>
+          <TimePicker
+            onChange={(h, m) => update([['hour', h], ['minutes', m]])}
+            hour={alarm.hour}
+            minutes={alarm.minutes}
+          />
+          <TextInput
+            description={'Title'}
+            style={styles.textInput}
+            onChangeText={v => update([['title', v]])}
+            value={alarm.title}
+          />
+          <TextInput
+            description={'Description'}
+            style={styles.textInput}
+            onChangeText={v => update([['description', v]])}
+            value={alarm.description}
+          />
+          <SwitcherInput
             description={'Repeat'}
-            onChange={v => update([['days', v]])}
-            activeDays={alarm.days}
+            value={alarm.repeating}
+            onChange={v => update([['repeating', v]])}
           />
-        )}
+          {alarm.repeating && (
+            <DayPicker
+              onChange={v => update([['days', v]])}
+              activeDays={alarm.days}
+            />
+          )}
+        </View>
         <View style={styles.buttonContainer}>
-          <Button
-            onPress={onSave}
-            title={'Save'}
-          />
           {mode === 'EDIT' && (
             <Button
               onPress={onDelete}
               title={'Delete'}
             />
           )}
+          <Button
+            fill={true}
+            onPress={onSave}
+            title={'Save'}
+          />
         </View>
       </View>
     </View>
@@ -103,11 +105,14 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-around',
     alignItems: 'center',
+    height: '100%'
+  },
+  inputsContainer: {
+    width: '100%'
   },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-around'
   },
 });

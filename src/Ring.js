@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { getAlarm, snoozeAlarm, stopAlarm } from './alarm';
 import Button from './components/Button';
-import { globalStyles } from './global';
+import { colors, globalStyles } from './global';
 
 
 export default function ({ route, navigation }) {
@@ -23,10 +23,12 @@ export default function ({ route, navigation }) {
   return (
     <View style={globalStyles.container}>
       <View style={[globalStyles.innerContainer, styles.container]}>
-        <Text style={styles.clockText}>
-          {alarm.getTimeString().hour} : {alarm.getTimeString().minutes}
-        </Text>
-        <Text>{alarm.title}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.clockText}>
+            {alarm.getTimeString().hour} : {alarm.getTimeString().minutes}
+          </Text>
+          <Text style={styles.title}>{alarm.title}</Text>
+        </View>
         <View style={styles.buttonContainer}>
           <Button
             title={'Snooze'}
@@ -58,10 +60,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 50,
   },
+  textContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around'
   },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: colors.GREY
+  }
 });

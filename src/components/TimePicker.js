@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { colors } from '../global';
 
 
 export default function ({hour, minutes, onChange = () => null}) {
@@ -8,7 +9,7 @@ export default function ({hour, minutes, onChange = () => null}) {
 
   return (
     <View>
-      <TouchableOpacity onPress={() => setShowPicker(true)}>
+      <TouchableOpacity style={styles.container} onPress={() => setShowPicker(true)}>
         <Text style={styles.clockText}>
           {hour < 10 ? '0' + hour : hour} : {minutes < 10 ? '0' + minutes : minutes}
         </Text>
@@ -39,9 +40,14 @@ function getDate (hour, minutes) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   clockText: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 50
+    fontSize: 70
   }
 });
