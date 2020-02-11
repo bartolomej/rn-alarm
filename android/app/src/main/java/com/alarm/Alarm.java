@@ -2,13 +2,12 @@ package com.alarm;
 
 import com.google.gson.Gson;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 
-public class Alarm implements Cloneable, Serializable {
+public class Alarm implements Cloneable {
 
     String uid;
     ArrayList<Integer> days;
@@ -20,7 +19,7 @@ public class Alarm implements Cloneable, Serializable {
     boolean repeating;
     boolean active;
 
-    public Alarm (String uid, ArrayList<Integer> days, int hour, int minutes, int snoozeInterval, String title, String description, boolean repeating, boolean active) {
+    Alarm(String uid, ArrayList<Integer> days, int hour, int minutes, int snoozeInterval, String title, String description, boolean repeating, boolean active) {
         this.uid = uid;
         this.days = days;
         this.hour = hour;
@@ -32,7 +31,7 @@ public class Alarm implements Cloneable, Serializable {
         this.active = active;
     }
 
-    public Date[] getDates () {
+    Date[] getDates() {
         Date[] dates = new Date[days.size()];
         for (int i = 0; i < dates.length; i++) {
             Calendar date = Utils.getDate(days.get(i), hour, minutes);
@@ -41,26 +40,15 @@ public class Alarm implements Cloneable, Serializable {
         return dates;
     }
 
-    public Date getCurrentDate () {
-        Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_WEEK);
-        for (int day : days) {
-            if (day == currentDay) {
-                return Utils.getDate(day, hour, minutes).getTime();
-            }
-        }
-        return null;
-    }
-
-    public AlarmDates getAlarmDates () {
+    AlarmDates getAlarmDates() {
         return new AlarmDates(uid, getDates());
     }
 
-    public static Alarm fromJson (String json) {
+    static Alarm fromJson(String json) {
         return new Gson().fromJson(json, Alarm.class);
     }
 
-    public static String toJson (Alarm alarm) {
+    static String toJson(Alarm alarm) {
         return new Gson().toJson(alarm);
     }
 

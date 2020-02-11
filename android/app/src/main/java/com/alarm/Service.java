@@ -11,11 +11,11 @@ public class Service {
     private static Sound sound;
     private static String activeAlarmUid;
 
-    public static String getActiveAlarm () {
+    static String getActiveAlarm() {
         return activeAlarmUid;
     }
 
-    public static void schedule(Context context, Alarm alarm) {
+    static void schedule(Context context, Alarm alarm) {
         AlarmDates dates = alarm.getAlarmDates();
         for (Date date : dates.getDates()) {
             Helper.scheduleAlarm(context, alarm.uid, date.getTime(), dates.getNotificationId(date));
@@ -24,8 +24,20 @@ public class Service {
         Storage.saveDates(context, dates);
     }
 
-    // TODO: fix returns notification id -1 on update alarm
-    public static void update(Context context, Alarm alarm) {
+    public static void reschedule(Context context) {
+        Alarm[] alarms = Storage.getAllAlarms(context);
+        for (Alarm alarm : alarms) {
+            Storage.removeDates(context, alarm.uid);
+            AlarmDates dates = alarm.getAlarmDates();
+            Storage.saveDates(context, dates);
+            for (Date date : dates.getDates()) {
+                Helper.scheduleAlarm(context, alarm.uid, date.getTime(), dates.getNotificationId(date));
+                Log.d(TAG, "rescheduling alarm: " + alarm.uid);
+            }
+        }
+    }
+
+    static void update(Context context, Alarm alarm) {
         AlarmDates prevDates = Storage.getDates(context, alarm.uid);
         AlarmDates dates = alarm.getAlarmDates();
         for (Date date : dates.getDates()) {
@@ -37,14 +49,14 @@ public class Service {
         }
     }
 
-    public static void removeAll(Context context) {
+    static void removeAll(Context context) {
         Alarm[] alarms = Storage.getAllAlarms(context);
         for (Alarm alarm : alarms) {
             remove(context, alarm.uid);
         }
     }
 
-    public static void remove(Context context, String alarmUid) {
+    static void remove(Context context, String alarmUid) {
         if (sound != null) {
             sound.stop();
         }
@@ -60,7 +72,7 @@ public class Service {
         }
     }
 
-    public static void enable(Context context, String alarmUid) {
+    static void enable(Context context, String alarmUid) {
         Alarm alarm = Storage.getAlarm(context, alarmUid);
         if (alarm.active) {
             Log.d(TAG, "Alarm already active - exiting job");
@@ -73,7 +85,7 @@ public class Service {
         }
     }
 
-    public static void disable(Context context, String alarmUid) {
+    static void disable(Context context, String alarmUid) {
         Alarm alarm = Storage.getAlarm(context, alarmUid);
         if (!alarm.active) {
             Log.d(TAG, "Alarm already inactive - exiting job");
@@ -94,7 +106,7 @@ public class Service {
         Helper.sendNotification(context, alarm, dates.getCurrentNotificationId());
     }
 
-    public static void stop(Context context) {
+    static void stop(Context context) {
         sound.stop();
         Alarm alarm = Storage.getAlarm(context, activeAlarmUid);
         AlarmDates dates = Storage.getDates(context, activeAlarmUid);

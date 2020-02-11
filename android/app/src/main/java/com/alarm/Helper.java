@@ -21,11 +21,11 @@ import com.alarm.receivers.DismissReceiver;
 import com.app.R;
 
 
-public class Helper {
+class Helper {
 
     private static final String TAG = "Helper";
 
-    public static void scheduleAlarm (Context context, String alarmUid, long triggerAtMillis, int notificationID) {
+    static void scheduleAlarm(Context context, String alarmUid, long triggerAtMillis, int notificationID) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_UID", alarmUid);
@@ -35,7 +35,6 @@ public class Helper {
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -43,12 +42,11 @@ public class Helper {
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         }
-
         Log.d(TAG, "scheduling alarm with notification id: " + notificationID);
         Log.d(TAG, "alarm scheduled to fire in " + (((float)(triggerAtMillis - System.currentTimeMillis())) / (1000 * 60)) + "min");
     }
 
-    public static void cancelAlarm (Context context, int notificationID) {
+    static void cancelAlarm(Context context, int notificationID) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -61,9 +59,9 @@ public class Helper {
         Log.d(TAG, "canceling alarm with notification id: " + notificationID);
     }
 
-    public static void sendNotification(Context context, Alarm alarm, int notificationID) {
+    static void sendNotification(Context context, Alarm alarm, int notificationID) {
         try {
-            NotificationCompat.Builder mBuilder = getNotificationBuilder(context, notificationID, alarm.title, alarm.description);
+            NotificationCompat.Builder mBuilder = getNotificationBuilder(context, notificationID, alarm.uid, alarm.title, alarm.description);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(notificationID, mBuilder.build());
         } catch (Exception e) {
@@ -71,31 +69,13 @@ public class Helper {
         }
     }
 
-    private static PendingIntent createOnClickedIntent(Context context, int notificationID) {
-        Intent resultIntent = new Intent(context, Utils.getMainActivityClass(context));
-        //resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //resultIntent.putExtras(alarm.toBundle());
-
-        return PendingIntent.getActivity(
-                context,
-                notificationID,
-                resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private static PendingIntent createOnDismissedIntent(Context context, int notificationId) {
-        Intent intent = new Intent(context, DismissReceiver.class);
-        intent.putExtra("notification_id", notificationId);
-        return PendingIntent.getBroadcast(context.getApplicationContext(), notificationId, intent, 0);
-    }
-
-    public static void cancelNotification (Context context, int notificationId) {
+    static void cancelNotification(Context context, int notificationId) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(notificationId);
         manager.cancelAll();
     }
 
-    public static void createNotificationChannel(Context context) {
+    static void createNotificationChannel(Context context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -115,14 +95,13 @@ public class Helper {
             // or other notification behaviors after this
             NotificationManager notificationManager = ContextCompat.getSystemService(context, NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-
             Log.d(TAG, "created a notification channel " + channel.toString());
         } else {
             Log.d(TAG, "didn't need to create a notification channel");
         }
     }
 
-    private static NotificationCompat.Builder getNotificationBuilder (Context context, int id, String title, String description) {
+    private static NotificationCompat.Builder getNotificationBuilder (Context context, int id, String alarmUid, String title, String description) {
         Resources res = context.getResources();
         String packageName = context.getPackageName();
         int smallIconResId = res.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -139,21 +118,35 @@ public class Helper {
                 .setAutoCancel(false)
                 .setSound(null)
                 .setVibrate(null)
-                .setContentIntent(createOnClickedIntent(context, id))
-                .setDeleteIntent(createOnDismissedIntent(context, id));
+                .setContentIntent(createOnClickedIntent(context, alarmUid, id))
+                .setDeleteIntent(createOnDismissedIntent(context, alarmUid, id));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int largeIconResId = res.getIdentifier("ic_launcher", "mipmap", packageName);
             Bitmap largeIconBitmap = BitmapFactory.decodeResource(res, largeIconResId);
-
             if (largeIconResId != 0) builder.setLargeIcon(largeIconBitmap);
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setCategory(NotificationCompat.CATEGORY_CALL);
             builder.setColor(Color.parseColor("blue"));
         }
-
         return builder;
+    }
+
+    private static PendingIntent createOnClickedIntent(Context context, String alarmUid, int notificationID) {
+        Intent resultIntent = new Intent(context, Utils.getMainActivityClass(context));
+        resultIntent.putExtra("ALARM_UID", alarmUid);
+        return PendingIntent.getActivity(
+                context,
+                notificationID,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private static PendingIntent createOnDismissedIntent(Context context, String alarmUid, int notificationId) {
+        Intent intent = new Intent(context, DismissReceiver.class);
+        intent.putExtra("NOTIFICATION_ID", notificationId);
+        intent.putExtra("ALARM_UID", alarmUid);
+        return PendingIntent.getBroadcast(context.getApplicationContext(), notificationId, intent, 0);
     }
 }

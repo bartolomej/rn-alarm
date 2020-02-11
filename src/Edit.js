@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, View, Text } from 'react-native';
+import { TextInput, View, Text, Switch } from 'react-native';
 import Alarm, { removeAlarm, scheduleAlarm, updateAlarm } from './alarm';
 import DayPicker from './components/DayPicker';
 import TimePicker from './components/TimePicker';
@@ -40,17 +40,25 @@ export default function ({ route, navigation }) {
           minutes={alarm.minutes}
         />
         <TextInput
-          onChangeText={value => update([['title', value]])}
+          onChangeText={v => update([['title', v]])}
           value={alarm.title}
         />
         <TextInput
-          onChangeText={value => update([['description', value]])}
+          onChangeText={v => update([['description', v]])}
           value={alarm.description}
         />
         <DayPicker
-          onChange={value => update([['days', value]])}
+          onChange={v => update([['days', v]])}
           activeDays={alarm.days}
         />
+        <Switch
+          ios_backgroundColor={'black'}
+          trackColor={{
+            false: 'blue',
+            true: 'black',
+          }}
+          value={alarm.repeating}
+          onValueChange={v => update([['repeating', v]])}/>
         <Button
           onPress={() => {
             if (mode === 'EDIT') {
