@@ -21,10 +21,7 @@ export default function ({uid, title, hour, minutes, days, onPress, active, onCh
       <View style={styles.rightInnerContainer}>
         <Switch
           ios_backgroundColor={'black'}
-          trackColor={{
-            false: 'blue',
-            true: 'black',
-          }}
+          trackColor={{ false: 'blue', true: 'black', }}
           value={isActive}
           onValueChange={value => {
             onChange(value);
@@ -62,6 +59,7 @@ const styles = StyleSheet.create({
   },
   descContainer: {
     flexDirection: 'row',
+    color: 'grey'
   },
   clock: {
     color: 'black',

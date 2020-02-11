@@ -4,22 +4,29 @@ import AlarmView from './components/AlarmView';
 import React, { useEffect, useState } from 'react';
 import { globalStyles } from './global';
 
-
 export default function ({ navigation }) {
   const [alarms, setAlarms] = useState(null);
+  const [scheduler, setScheduler] = useState(null);
 
   useEffect(() => {
     navigation.addListener('focus', async () => {
       setAlarms(await getAllAlarms());
+      setScheduler(startInterval());
     });
-    (async function () {
-      const activeAlarm = await getAlarmState();
-      if (activeAlarm) {
-        navigation.navigate('Ring', { alarmUid: activeAlarm });
-      }
-      setAlarms(await getAllAlarms());
-    }());
+    navigation.addListener('blur', async () => {
+      clearInterval(scheduler);
+    });
   }, []);
+
+  function startInterval () {
+    return setInterval(async () => {
+      const alarmUid = await getAlarmState();
+      if (alarmUid) {
+        console.log('found ringing alarm: ', alarmUid);
+        navigation.navigate('Ring', { alarmUid });
+      }
+    }, 10000);
+  }
 
   return (
     <View style={globalStyles.container}>

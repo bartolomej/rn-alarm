@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+export const colors = {
+  GREY: '#d0d5dc',
+  BLUE: '#1992fe'
+};
 
 export const globalStyles = StyleSheet.create({
   container: {
@@ -7,7 +11,8 @@ export const globalStyles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },
   innerContainer: {
     width: '90%',

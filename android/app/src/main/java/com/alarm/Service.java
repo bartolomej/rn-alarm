@@ -77,6 +77,9 @@ public class Service {
         if (alarm.active) {
             Log.d(TAG, "Alarm already active - exiting job");
             return;
+        } else {
+            alarm.active = true;
+            Storage.saveAlarm(context, alarm);
         }
         AlarmDates dates = alarm.getAlarmDates();
         Storage.saveDates(context, dates);
@@ -90,6 +93,9 @@ public class Service {
         if (!alarm.active) {
             Log.d(TAG, "Alarm already inactive - exiting job");
             return;
+        } else {
+            alarm.active = false;
+            Storage.saveAlarm(context, alarm);
         }
         AlarmDates dates = Storage.getDates(context, alarmUid);
         for (Date date : dates.getDates()) {
