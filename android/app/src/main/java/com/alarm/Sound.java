@@ -30,8 +30,8 @@ class Sound {
         this.mediaPlayer = new MediaPlayer();
     }
 
-    void play(String soundName) {
-        Uri soundUri = getSoundUri(soundName);
+    void play(String sound) {
+        Uri soundUri = getSoundUri(sound);
         playSound(soundUri);
         startVibration();
     }
@@ -51,6 +51,7 @@ class Sound {
     private void playSound(Uri soundUri) {
         try {
             if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.setScreenOnWhilePlaying(true);
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
                 mediaPlayer.setDataSource(context, soundUri);
                 mediaPlayer.setVolume(100, 100);
@@ -97,7 +98,7 @@ class Sound {
     }
 
     private Uri getSoundUri(String soundName) {
-        Uri soundUri = null;
+        Uri soundUri;
         if (soundName.equals("default")) {
             soundUri = Settings.System.DEFAULT_RINGTONE_URI;
         } else {

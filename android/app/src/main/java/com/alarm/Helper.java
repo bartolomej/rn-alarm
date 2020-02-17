@@ -1,6 +1,7 @@
 package com.alarm;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +24,7 @@ import com.app.R;
 
 class Helper {
 
-    private static final String TAG = "Helper";
+    private static final String TAG = "AlarmHelper";
 
     static void scheduleAlarm(Context context, String alarmUid, long triggerAtMillis, int notificationID) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -42,6 +43,7 @@ class Helper {
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         }
+        Log.d(TAG, "SDK version: " + Build.VERSION.SDK_INT);
         Log.d(TAG, "scheduling alarm with notification id: " + notificationID);
         Log.d(TAG, "alarm scheduled to fire in " + (((float)(triggerAtMillis - System.currentTimeMillis())) / (1000 * 60)) + "min");
     }
@@ -61,9 +63,9 @@ class Helper {
 
     static void sendNotification(Context context, Alarm alarm, int notificationID) {
         try {
-            NotificationCompat.Builder mBuilder = getNotificationBuilder(context, notificationID, alarm.uid, alarm.title, alarm.description);
+            Notification mBuilder = getNotification(context, notificationID, alarm.uid, alarm.title, alarm.description);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(notificationID, mBuilder.build());
+            mNotificationManager.notify(notificationID, mBuilder);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,7 +103,7 @@ class Helper {
         }
     }
 
-    private static NotificationCompat.Builder getNotificationBuilder (Context context, int id, String alarmUid, String title, String description) {
+    protected static Notification getNotification(Context context, int id, String alarmUid, String title, String description) {
         Resources res = context.getResources();
         String packageName = context.getPackageName();
         int smallIconResId = res.getIdentifier("ic_launcher", "mipmap", packageName);
@@ -130,7 +132,7 @@ class Helper {
             builder.setCategory(NotificationCompat.CATEGORY_CALL);
             builder.setColor(Color.parseColor("blue"));
         }
-        return builder;
+        return builder.build();
     }
 
     private static PendingIntent createOnClickedIntent(Context context, String alarmUid, int notificationID) {

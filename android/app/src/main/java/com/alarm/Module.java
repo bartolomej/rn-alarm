@@ -1,10 +1,7 @@
 package com.alarm;
 
-import androidx.annotation.Nullable;
-
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
@@ -12,7 +9,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.ArrayList;
 
@@ -33,49 +29,57 @@ public class Module extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getState (Promise promise) {
-        promise.resolve(Service.getActiveAlarm());
+        promise.resolve(Manager.getActiveAlarm());
     }
 
     @ReactMethod
-    public void set (ReadableMap details) {
+    public void set (ReadableMap details, Promise promise) {
         Alarm alarm = parseAlarmObject(details);
-        Service.schedule(reactContext, alarm);
+        Manager.schedule(reactContext, alarm);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void update (ReadableMap details) {
+    public void update (ReadableMap details, Promise promise) {
         Alarm alarm = parseAlarmObject(details);
-        Service.update(reactContext, alarm);
+        Manager.update(reactContext, alarm);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void remove (String alarmUid) {
-        Service.remove(reactContext, alarmUid);
+    public void remove (String alarmUid, Promise promise) {
+        Manager.remove(reactContext, alarmUid);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void removeAll () {
-        Service.removeAll(reactContext);
+    public void removeAll (Promise promise) {
+        Manager.removeAll(reactContext);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void enable (String alarmUid) {
-        Service.enable(reactContext, alarmUid);
+    public void enable (String alarmUid, Promise promise) {
+        Manager.enable(reactContext, alarmUid);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void disable (String alarmUid) {
-        Service.disable(reactContext, alarmUid);
+    public void disable (String alarmUid, Promise promise) {
+        Manager.disable(reactContext, alarmUid);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void stop () {
-        Service.stop(reactContext);
+    public void stop (Promise promise) {
+        Manager.stop(reactContext);
+        promise.resolve(null);
     }
 
     @ReactMethod
-    public void snooze () {
-        Service.snooze(reactContext);
+    public void snooze (Promise promise) {
+        Manager.snooze(reactContext);
+        promise.resolve(null);
     }
 
     @ReactMethod

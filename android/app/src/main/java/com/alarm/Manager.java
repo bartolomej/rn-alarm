@@ -5,9 +5,9 @@ import android.util.Log;
 
 import java.util.Date;
 
-public class Service {
+public class Manager {
 
-    private static final String TAG = "AlarmService";
+    private static final String TAG = "AlarmManager";
     private static Sound sound;
     private static String activeAlarmUid;
 
@@ -43,6 +43,8 @@ public class Service {
         for (Date date : dates.getDates()) {
             Helper.scheduleAlarm(context, alarm.uid, date.getTime(), dates.getNotificationId(date));
         }
+        Storage.saveAlarm(context, alarm);
+        Storage.saveDates(context, dates);
         if (prevDates == null) return;
         for (Date date : prevDates.getDates()) {
             Helper.cancelAlarm(context, dates.getNotificationId(date));
@@ -74,12 +76,12 @@ public class Service {
 
     static void enable(Context context, String alarmUid) {
         Alarm alarm = Storage.getAlarm(context, alarmUid);
-        if (alarm.active) {
-            Log.d(TAG, "Alarm already active - exiting job");
-            return;
-        } else {
+        if (!alarm.active) {
             alarm.active = true;
             Storage.saveAlarm(context, alarm);
+        } else {
+            Log.d(TAG, "Alarm already active - exiting job");
+            return;
         }
         AlarmDates dates = alarm.getAlarmDates();
         Storage.saveDates(context, dates);
@@ -90,12 +92,12 @@ public class Service {
 
     static void disable(Context context, String alarmUid) {
         Alarm alarm = Storage.getAlarm(context, alarmUid);
-        if (!alarm.active) {
-            Log.d(TAG, "Alarm already inactive - exiting job");
-            return;
-        } else {
+        if (alarm.active) {
             alarm.active = false;
             Storage.saveAlarm(context, alarm);
+        } else {
+            Log.d(TAG, "Alarm already inactive - exiting job");
+            return;
         }
         AlarmDates dates = Storage.getDates(context, alarmUid);
         for (Date date : dates.getDates()) {

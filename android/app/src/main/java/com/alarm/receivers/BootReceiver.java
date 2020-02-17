@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.alarm.Service;
+import com.alarm.Manager;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -13,7 +13,10 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Service.reschedule(context);
-        Log.d(TAG, "received on boot intent");
+        String action = intent.getAction();
+        if (action != null && action.equals("android.intent.action.BOOT_COMPLETED")) {
+            Log.d(TAG, "received on boot intent: " + action);
+            Manager.reschedule(context);
+        }
     }
 }
