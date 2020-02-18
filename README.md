@@ -6,10 +6,7 @@ Made for Android with [React Native](https://facebook.github.io/react-native/) f
 It demonstrates communication with native Android code via [react-native bridge](https://facebook.github.io/react-native/docs/native-modules-android), 
 scheduling Android alarms with [AlarmManager](https://developer.android.com/reference/android/app/AlarmManager),
 working with foreground services for playing background music,...
-
-<img width="500" alt="alarms screen" src="./screenshots/alarm-screen.png">
-<img width="500" alt="edit screen" src="./screenshots/edit-screen.png">
-<img width="500" alt="ring screen" src="./screenshots/ring-screen.png">
+App screenshots available in `/screenshots` folder.
 
 ## Scripts
 - `npm start` - starts metro build server
