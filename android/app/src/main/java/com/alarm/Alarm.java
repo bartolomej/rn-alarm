@@ -34,7 +34,7 @@ public class Alarm implements Cloneable {
     Date[] getDates() {
         Date[] dates = new Date[days.size()];
         for (int i = 0; i < dates.length; i++) {
-            Calendar date = Utils.getDate(days.get(i), hour, minutes);
+            Calendar date = Helper.getDate(days.get(i), hour, minutes);
             dates[i] = date.getTime();
         }
         return dates;

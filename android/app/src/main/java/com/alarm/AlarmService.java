@@ -9,8 +9,6 @@ import android.util.Log;
 public class AlarmService extends Service {
 
     private static final String TAG = "AlarmService";
-    private String alarmUid;
-    private Thread backgroundThread;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -24,15 +22,6 @@ public class AlarmService extends Service {
         super.onCreate();
         Log.d(TAG, "Creating service");
     }
-
-    private Runnable alarmTask = new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "Running thread for alarm " + alarmUid);
-            Manager.start(getApplicationContext(), alarmUid);
-        }
-    };
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -44,11 +33,14 @@ public class AlarmService extends Service {
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         super.onStartCommand(intent, flags, startId);
         Log.d(TAG, "On start command");
-        this.alarmUid = intent.getStringExtra("ALARM_UID");
-        Notification notification = Helper.getNotification(this, 0, this.alarmUid, "Service", "Playing music");
-        backgroundThread = new Thread(alarmTask);
-        backgroundThread.start();
+
+        String alarmUid = intent.getStringExtra("ALARM_UID");
+        Alarm alarm = Storage.getAlarm(getApplicationContext(), alarmUid);
+        Notification notification = Helper.getAlarmNotification(this, alarm, 1);
+        Manager.start(getApplicationContext(), alarmUid);
         startForeground(1, notification);
+
+        // service will be explicitly started and stopped
         return START_STICKY;
     }
 

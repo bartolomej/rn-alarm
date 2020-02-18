@@ -5,43 +5,43 @@ import React from 'react';
 
 const AlarmService = NativeModules.AlarmModule;
 
-export function scheduleAlarm (alarm) {
+export async  function scheduleAlarm (alarm) {
   if (!(alarm instanceof Alarm)) {
     alarm = new Alarm(alarm);
   }
-  AlarmService.set(alarm.toAndroid());
+  await AlarmService.set(alarm.toAndroid());
   console.log('scheduling alarm: ', JSON.stringify(alarm))
 }
 
-export function enableAlarm (uid) {
-  AlarmService.enable(uid);
+export async function enableAlarm (uid) {
+  await AlarmService.enable(uid);
 }
 
-export function disableAlarm (uid) {
-  AlarmService.disable(uid);
+export async function disableAlarm (uid) {
+  await AlarmService.disable(uid);
 }
 
-export function stopAlarm () {
-  AlarmService.stop();
+export async function stopAlarm () {
+  await AlarmService.stop();
 }
 
-export function snoozeAlarm () {
-  AlarmService.snooze();
+export async function snoozeAlarm () {
+  await AlarmService.snooze();
 }
 
-export function removeAlarm (uid) {
-  AlarmService.remove(uid);
+export async function removeAlarm (uid) {
+  await AlarmService.remove(uid);
 }
 
-export function updateAlarm (alarm) {
+export async function updateAlarm (alarm) {
   if (!(alarm instanceof Alarm)) {
     alarm = new Alarm(alarm);
   }
-  AlarmService.update(alarm.toAndroid());
+  await AlarmService.update(alarm.toAndroid());
 }
 
-export function removeAllAlarms () {
-  AlarmService.removeAll();
+export async function removeAllAlarms () {
+  await AlarmService.removeAll();
 }
 
 export async function getAllAlarms () {

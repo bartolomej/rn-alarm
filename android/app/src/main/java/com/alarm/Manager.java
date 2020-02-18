@@ -70,7 +70,6 @@ public class Manager {
         for (Date date : dates.getDates()) {
             int notificationID = dates.getNotificationId(date);
             Helper.cancelAlarm(context, notificationID);
-            Helper.cancelNotification(context, notificationID);
         }
     }
 
@@ -105,16 +104,17 @@ public class Manager {
         }
     }
 
-    public static void start(Context context, String alarmUid) {
+    static void start(Context context, String alarmUid) {
         activeAlarmUid = alarmUid;
         sound = new Sound(context);
         sound.play("default");
-        Alarm alarm = Storage.getAlarm(context, alarmUid);
-        AlarmDates dates = Storage.getDates(context, alarmUid);
-        Helper.sendNotification(context, alarm, dates.getCurrentNotificationId());
+        
+        Log.d(TAG, "Starting " + activeAlarmUid);
     }
 
     static void stop(Context context) {
+        Log.d(TAG, "Stopping " + activeAlarmUid);
+
         sound.stop();
         Alarm alarm = Storage.getAlarm(context, activeAlarmUid);
         AlarmDates dates = Storage.getDates(context, activeAlarmUid);
@@ -132,7 +132,9 @@ public class Manager {
         activeAlarmUid = null;
     }
 
-    public static void snooze(Context context) {
+    static void snooze(Context context) {
+        Log.d(TAG, "Snoozing " + activeAlarmUid);
+
         sound.stop();
         Alarm alarm = Storage.getAlarm(context, activeAlarmUid);
         AlarmDates dates = Storage.getDates(context, activeAlarmUid);

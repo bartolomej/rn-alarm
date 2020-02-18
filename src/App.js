@@ -4,10 +4,9 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Home from './Home';
-import Settings from './Edit';
-import Ring from './Ring';
-import { colors } from './global';
+import Home from './screens/Alarms';
+import Settings from './screens/Edit';
+import Ring from './screens/Ring';
 
 
 const Stack = createStackNavigator();
@@ -17,12 +16,11 @@ export default function () {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
+          name="Alarms"
           component={Home}
           options={params => ({
-            headerTitle: props => (
-              <Text style={styles.headerTitle}>Alarms</Text>
-            ),
+            ...headerStyles,
+            title: 'Alarms',
             headerRight: () => (
               <AddButton
                 title={"+ "}
@@ -34,7 +32,7 @@ export default function () {
         <Stack.Screen
           name="Edit"
           component={Settings}
-          options={{title: 'Alarm'}}
+          options={{...headerStyles, title: 'Alarm'}}
         />
         <Stack.Screen
           name="Ring"
@@ -57,6 +55,16 @@ function AddButton ({title, onPress}) {
   )
 }
 
+export const headerStyles = {
+  headerStyle: {
+    elevation: 0,
+  },
+  headerTintColor: '#000',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+};
+
 const styles = StyleSheet.create({
   button: {
     backgroundColor: 'transparent',
@@ -67,9 +75,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25
   },
-  headerTitle: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: colors.BLUE,
-  }
 });

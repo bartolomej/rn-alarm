@@ -10,21 +10,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
-public class Storage {
+class Storage {
 
-    public static void saveAlarm(Context context, Alarm alarm) {
+    static void saveAlarm(Context context, Alarm alarm) {
         SharedPreferences.Editor editor = getEditor(context);
         editor.putString(alarm.uid, Alarm.toJson(alarm));
         editor.apply();
     }
 
-    public static void saveDates(Context context, AlarmDates dates) {
+    static void saveDates(Context context, AlarmDates dates) {
         SharedPreferences.Editor editor = getEditor(context);
         editor.putString(dates.uid, AlarmDates.toJson(dates));
         editor.apply();
     }
 
-    public static Alarm[] getAllAlarms(Context context) {
+    static Alarm[] getAllAlarms(Context context) {
         ArrayList<Alarm> alarms = new ArrayList<>();
         SharedPreferences preferences = getSharedPreferences(context);
         Map<String, ?> keyMap = preferences.getAll();
@@ -35,36 +35,29 @@ public class Storage {
         return alarms.toArray(new Alarm[0]);
     }
 
-    public static Alarm getAlarm(Context context, String alarmUid) {
+    static Alarm getAlarm(Context context, String alarmUid) {
         SharedPreferences preferences = getSharedPreferences(context);
         return Alarm.fromJson(preferences.getString(alarmUid, null));
     }
 
-    public static AlarmDates getDates(Context context, String alarmUid) {
+    static AlarmDates getDates(Context context, String alarmUid) {
         SharedPreferences preferences = getSharedPreferences(context);
         String json = preferences.getString(AlarmDates.getDatesId(alarmUid), null);
         return AlarmDates.fromJson(json);
     }
 
-    public static void removeAlarm(Context context, String alarmUid) {
+    static void removeAlarm(Context context, String alarmUid) {
         remove(context, alarmUid);
     }
 
-    public static void removeDates(Context context, String alarmUid) {
+    static void removeDates(Context context, String alarmUid) {
         remove(context, AlarmDates.getDatesId(alarmUid));
     }
 
-    public static void remove(Context context, String id) {
+    private static void remove(Context context, String id) {
         SharedPreferences preferences = getSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(id);
-        editor.apply();
-    }
-
-    public static void removeAll(Context context) {
-        SharedPreferences preferences = getSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
         editor.apply();
     }
 

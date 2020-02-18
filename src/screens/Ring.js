@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { getAlarm, snoozeAlarm, stopAlarm } from './alarm';
-import Button from './components/Button';
-import { colors, globalStyles } from './global';
+import { getAlarm, snoozeAlarm, stopAlarm } from '../alarm';
+import Button from '../components/Button';
+import { colors, globalStyles } from '../global';
 
 
 export default function ({ route, navigation }) {
@@ -17,7 +17,7 @@ export default function ({ route, navigation }) {
   }, []);
 
   if (!alarm) {
-    return <Text>Loading...</Text>;
+    return <View/>;
   }
 
   return (
@@ -32,15 +32,15 @@ export default function ({ route, navigation }) {
         <View style={styles.buttonContainer}>
           <Button
             title={'Snooze'}
-            onPress={() => {
-              snoozeAlarm();
+            onPress={async () => {
+              await snoozeAlarm();
               navigation.goBack();
             }}
           />
           <Button
             title={'Stop'}
-            onPress={() => {
-              stopAlarm();
+            onPress={async () => {
+              await stopAlarm();
               navigation.goBack();
             }}
           />

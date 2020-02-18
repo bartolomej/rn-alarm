@@ -15,7 +15,7 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Utils.class})
+@PrepareForTest({Helper.class})
 public class AlarmTest {
 
     // Tue Jan 28 21:06:47 CET 2020
@@ -59,7 +59,7 @@ public class AlarmTest {
         Alarm alarm = new Alarm("1", days, 1, 0, 1, "Test", "Test description", false, true);
 
         assertEquals(1, alarm.getDates().length);
-        assertEquals(Utils.getDate(1, 1, 0).getTime(), alarm.getDates()[0]);
+        assertEquals(Helper.getDate(1, 1, 0).getTime(), alarm.getDates()[0]);
     }
 
     private static ArrayList<Integer> getDays (int[] days) {

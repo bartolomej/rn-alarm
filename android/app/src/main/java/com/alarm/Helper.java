@@ -21,6 +21,8 @@ import com.alarm.receivers.AlarmReceiver;
 import com.alarm.receivers.DismissReceiver;
 import com.app.R;
 
+import java.util.Calendar;
+
 
 class Helper {
 
@@ -63,12 +65,16 @@ class Helper {
 
     static void sendNotification(Context context, Alarm alarm, int notificationID) {
         try {
-            Notification mBuilder = getNotification(context, notificationID, alarm.uid, alarm.title, alarm.description);
+            Notification mBuilder = getAlarmNotification(context, alarm, notificationID);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(notificationID, mBuilder);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    static Notification getAlarmNotification(Context context, Alarm alarm, int notificationID) {
+        return getNotification(context, notificationID, alarm.uid, alarm.title, alarm.description);
     }
 
     static void cancelNotification(Context context, int notificationId) {
@@ -136,7 +142,7 @@ class Helper {
     }
 
     private static PendingIntent createOnClickedIntent(Context context, String alarmUid, int notificationID) {
-        Intent resultIntent = new Intent(context, Utils.getMainActivityClass(context));
+        Intent resultIntent = new Intent(context, Helper.getMainActivityClass(context));
         resultIntent.putExtra("ALARM_UID", alarmUid);
         return PendingIntent.getActivity(
                 context,
@@ -150,5 +156,33 @@ class Helper {
         intent.putExtra("NOTIFICATION_ID", notificationId);
         intent.putExtra("ALARM_UID", alarmUid);
         return PendingIntent.getBroadcast(context.getApplicationContext(), notificationId, intent, 0);
+    }
+
+    static Calendar getDate(int day, int hour, int minute) {
+        Calendar date = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        date.set(Calendar.DAY_OF_WEEK, day);
+        date.set(Calendar.HOUR_OF_DAY, hour);
+        date.set(Calendar.MINUTE, minute);
+        date.set(Calendar.SECOND, 0);
+        if (date.before(today)) {
+            date.add(Calendar.DATE, 7);
+        }
+        return date;
+    }
+
+    static Class getMainActivityClass(Context context) {
+        String packageName = context.getPackageName();
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        try {
+            String className = launchIntent.getComponent().getClassName();
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

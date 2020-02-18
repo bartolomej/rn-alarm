@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
-import {colors} from '../global';
+import { colors } from '../global';
 
 
-export default function ({uid, title, hour, minutes, days, onPress, active, onChange}) {
-  const [isActive, setIsActive] = useState(active);
+export default function ({ uid, title, hour, minutes, days, onPress, isActive, onChange }) {
 
   return (
     <TouchableOpacity
@@ -22,12 +21,9 @@ export default function ({uid, title, hour, minutes, days, onPress, active, onCh
       <View style={styles.rightInnerContainer}>
         <Switch
           ios_backgroundColor={'black'}
-          trackColor={{ false: colors.GREY, true: colors.BLUE, }}
+          trackColor={{ false: colors.GREY, true: colors.BLUE }}
           value={isActive}
-          onValueChange={value => {
-            onChange(value);
-            setIsActive(value);
-          }}/>
+          onValueChange={onChange}/>
       </View>
     </TouchableOpacity>
   );
@@ -60,14 +56,14 @@ const styles = StyleSheet.create({
   },
   descContainer: {
     flexDirection: 'row',
-    color: 'grey'
+    color: 'grey',
   },
   clock: {
     color: 'black',
     fontSize: 35,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   title: {
-    fontSize: 10
-  }
+    fontSize: 10,
+  },
 });

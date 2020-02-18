@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Alarm, { removeAlarm, scheduleAlarm, updateAlarm } from './alarm';
-import TextInput from './components/TextInput';
-import DayPicker from './components/DayPicker';
-import TimePicker from './components/TimePicker';
-import Button from './components/Button';
-import { globalStyles } from './global';
-import SwitcherInput from './components/SwitcherInput';
+import { StyleSheet, View } from 'react-native';
+import Alarm, { removeAlarm, scheduleAlarm, updateAlarm } from '../alarm';
+import TextInput from '../components/TextInput';
+import DayPicker from '../components/DayPicker';
+import TimePicker from '../components/TimePicker';
+import Button from '../components/Button';
+import { globalStyles } from '../global';
+import SwitcherInput from '../components/SwitcherInput';
 
 
 export default function ({ route, navigation }) {
@@ -31,23 +31,24 @@ export default function ({ route, navigation }) {
     setAlarm(a);
   }
 
-  function onSave () {
+  async function onSave () {
     if (mode === 'EDIT') {
-      updateAlarm(alarm);
+      alarm.active = true;
+      await updateAlarm(alarm);
     }
     if (mode === 'CREATE') {
-      scheduleAlarm(alarm);
+      await scheduleAlarm(alarm);
     }
     navigation.goBack();
   }
 
-  function onDelete () {
-    removeAlarm(alarm.uid);
+  async function onDelete () {
+    await removeAlarm(alarm.uid);
     navigation.goBack();
   }
 
   if (!alarm) {
-    return <Text>Loading...</Text>;
+    return <View/>;
   }
 
   return (
@@ -105,14 +106,14 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: '100%'
+    height: '100%',
   },
   inputsContainer: {
-    width: '100%'
+    width: '100%',
   },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
 });
