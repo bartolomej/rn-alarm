@@ -108,7 +108,7 @@ public class Manager {
         activeAlarmUid = alarmUid;
         sound = new Sound(context);
         sound.play("default");
-        
+
         Log.d(TAG, "Starting " + activeAlarmUid);
     }
 
