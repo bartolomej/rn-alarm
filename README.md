@@ -1,3 +1,5 @@
+
+
 # React Native Alarm app
 
 > This is an example implementation of a basic alarm clock app.
@@ -31,7 +33,7 @@ sudo keytool -genkey -v -keystore release.keystore -alias rn-alarm-app -keyalg R
 2. Store keystore credentials as environment variables in `.bash_profile`
 
 ```bash
-export ALARM_APP_KEYSTORE_ALIAS_NAME=keystore-alias
+export ALARM_APP_KEYSTORE_ALIAS_NAME=rn-alarm-app
 export ALARM_APP_KEYSTORE_KEY_PASSWORD=*****
 export ALARM_APP_KEYSTORE_PASSWORD=*****
 ```
